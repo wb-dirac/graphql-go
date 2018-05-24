@@ -158,7 +158,7 @@ func (s *Schema) exec(ctx context.Context, queryString string, operationName str
 		if variables == nil {
 			variables = make(map[string]interface{})
 		}
-		if _, ok := variables[v.Name.Name]; !ok {
+		if _, ok := variables[v.Name.Name]; !ok && v.Default != nil {
 			variables[v.Name.Name] = v.Default.Value(nil)
 		}
 	}
