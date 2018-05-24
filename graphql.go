@@ -153,7 +153,15 @@ func (s *Schema) exec(ctx context.Context, queryString string, operationName str
 	if err != nil {
 		return &Response{Errors: []*errors.QueryError{errors.Errorf("%s", err)}}
 	}
-
+	//add default value in op
+	for _, v := range op.Vars {
+		if variables == nil {
+			variables = make(map[string]interface{})
+		}
+		if _, ok := variables[v.Name.Name]; !ok {
+			variables[v.Name.Name] = v.Default.Value(nil)
+		}
+	}
 	r := &exec.Request{
 		Request: selected.Request{
 			Doc:    doc,
