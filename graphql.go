@@ -210,3 +210,27 @@ func getOperation(document *query.Document, operationName string) (*query.Operat
 	}
 	return op, nil
 }
+
+func (s *Schema) GetQueryFields(queryString string, operationName string) ([]string, error) {
+    doc, qErr := query.Parse(queryString)
+    if qErr != nil {
+        return nil, qErr
+    }
+
+    validationFinish := s.validationTracer.TraceValidation()
+    errs := validation.Validate(s.schema, doc, s.maxDepth)
+    validationFinish(errs)
+    if len(errs) != 0 {
+        return nil, errs[0]
+    }
+
+    op, err := getOperation(doc, operationName)
+    if err != nil {
+        return nil, err
+    }
+    fields := make([]string, len(op.Selections))
+    for i, v := range op.Selections {
+        fields[i] = v.(query.Field).Name.Name
+    }
+    return fields, nil
+}
