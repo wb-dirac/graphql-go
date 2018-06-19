@@ -230,7 +230,7 @@ func (s *Schema) GetQueryFields(queryString string, operationName string) ([]str
     }
     fields := make([]string, len(op.Selections))
     for i, v := range op.Selections {
-        fields[i] = v.(query.Field).Name.Name
+        fields[i] = v.(*query.Field).Name.Name
     }
     return fields, nil
 }
