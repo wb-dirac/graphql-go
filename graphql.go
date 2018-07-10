@@ -228,6 +228,11 @@ func (s *Schema) GetQueryFields(queryString string, operationName string) ([]str
     if err != nil {
         return nil, err
     }
+	
+    if op.Type != "MUTATION" {
+        return nil, nil
+    }
+	
     fields := make([]string, len(op.Selections))
     for i, v := range op.Selections {
         fields[i] = v.(*query.Field).Name.Name
